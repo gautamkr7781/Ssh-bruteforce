@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Cyber SOC Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root{
+  --bg:#0b1220;
+  --panel:#111827;
+  --accent:#22c55e;
+  --danger:#ef4444;
+}
+
+body{
+  margin:0;
+  font-family:Segoe UI;
+  background:radial-gradient(circle at top,#0b1220,#020617);
+  color:white;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+  width:240px;
+  height:100vh;
+  position:fixed;
+  background:#020617;
+  padding:15px;
+  border-right:1px solid rgba(34,197,94,0.2);
+}
+
+.logo{
+  font-size:20px;
+  color:var(--accent);
+  margin-bottom:20px;
+}
+
+/* menu */
+.menu-item{
+  padding:10px;
+  color:#94a3b8;
+  cursor:pointer;
+  border-radius:8px;
+  transition:0.3s;
+}
+.menu-item:hover{
+  background:#111827;
+  color:var(--accent);
+}
+.menu-item.active{
+  background:#111827;
+  color:var(--accent);
+  box-shadow:0 0 8px rgba(34,197,94,0.3);
+}
+
+/* ===== MAIN ===== */
+.main{
+  margin-left:240px;
+  padding:20px;
+}
+
+/* ===== ALERT (NO FIXED POSITION NOW) ===== */
+.alert{
+  background:var(--danger);
+  padding:8px;
+  text-align:center;
+  border-radius:6px;
+  margin-bottom:10px;
+}
+
+/* ===== TOPBAR ===== */
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#020617;
+  padding:10px;
+  border-radius:8px;
+  margin-bottom:10px;
+  box-shadow:0 0 10px #000;
+}
+
+h2{margin:0}
+
+/* ===== BUTTON ===== */
+button{
+  background:linear-gradient(90deg,#22c55e,#16a34a);
+  border:none;
+  padding:6px 12px;
+  border-radius:6px;
+  cursor:pointer;
+  color:white;
+  box-shadow:0 0 10px rgba(34,197,94,0.4);
+}
+
+/* ===== CARDS ===== */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.card{
+  background:rgba(17,24,39,0.7);
+  backdrop-filter:blur(8px);
+  padding:12px;
+  border-radius:10px;
+  text-align:center;
+  border:1px solid rgba(255,255,255,0.05);
+  box-shadow:0 0 12px #000;
+}
+
+/* ===== CHARTS ===== */
+.charts{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-top:10px;
+}
+
+.chart-box{
+  background:rgba(17,24,39,0.7);
+  padding:10px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.05);
+  height:220px;
+}
+
+/* ===== TABLE ===== */
+table{
+  width:100%;
+  margin-top:10px;
+  border-collapse:collapse;
+}
+th,td{
+  padding:6px;
+  border-bottom:1px solid #333;
+  text-align:center;
+  font-size:12px;
+}
+th{background:#1f2937}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="logo">🔐 CyberSec</div>
+
+  <div class="menu-item active" onclick="showSection('dashboard')">Dashboard</div>
+  <div class="menu-item" onclick="showSection('logs')">Logs</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<div id="alert" class="alert" style="display:none;">
+🚨 BRUTE FORCE ATTACK DETECTED
+</div>
+
+<div class="topbar">
+  <h2>Security Monitoring</h2>
+  <button onclick="generateLog()">⚡ Generate</button>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+
+<div class="cards">
+  <div class="card"><h2 id="total">0</h2><p>Total</p></div>
+  <div class="card"><h2 id="high">0</h2><p>High</p></div>
+  <div class="card"><h2 id="normal">0</h2><p>Normal</p></div>
+</div>
+
+<div class="charts">
+  <div class="chart-box"><canvas id="c1"></canvas></div>
+  <div class="chart-box"><canvas id="c2"></canvas></div>
+  <div class="chart-box"><canvas id="c3"></canvas></div>
+  <div class="chart-box"><canvas id="c4"></canvas></div>
+</div>
+
+</div>
+
+<!-- LOGS -->
+<div id="logs" style="display:none">
+<table>
+<thead>
+<tr>
+<th>IP</th><th>Attempts</th><th>Risk</th><th>Status</th>
+</tr>
+</thead>
+<tbody id="logTable"></tbody>
+</table>
+</div>
+
+</div>
+
+<script>
+let ch1,ch2,ch3,ch4;
+
+function showSection(id){
+  document.getElementById("dashboard").style.display="none";
+  document.getElementById("logs").style.display="none";
+  document.getElementById(id).style.display="block";
+
+  document.querySelectorAll(".menu-item").forEach(i=>i.classList.remove("active"));
+  event.target.classList.add("active");
+}
+
+async function loadLogs(){
+  const res=await fetch("http://localhost:5000/api/logs");
+  const data=await res.json();
+
+  let high=0,normal=0,susp=0;
+  let risks=[],attempts=[];
+  const table=document.getElementById("logTable");
+  table.innerHTML="";
+
+  data.forEach(log=>{
+    if(log.status==="Brute Force") high++;
+    else if(log.status==="Suspicious") susp++;
+    else normal++;
+
+    risks.push(log.riskScore);
+    attempts.push(log.attempts);
+
+    table.innerHTML+=`
+    <tr>
+      <td>${log.ip}</td>
+      <td>${log.attempts}</td>
+      <td>${log.riskScore}</td>
+      <td>${log.status}</td>
+    </tr>`;
+  });
+
+  document.getElementById("total").innerText=data.length;
+  document.getElementById("high").innerText=high;
+  document.getElementById("normal").innerText=normal;
+
+  document.getElementById("alert").style.display=high>0?"block":"none";
+
+  updateCharts(risks,attempts,high,susp,normal);
+}
+
+function updateCharts(r,a,h,s,n){
+  const max=30;
+  const rData=r.slice(-max);
+  const aData=a.slice(-max);
+  const labels=rData.map((_,i)=>i+1);
+
+  if(!ch1){
+    ch1=new Chart(c1,{
+      type:"line",
+      data:{labels,datasets:[{
+        label:"Risk",
+        data:rData,
+        borderColor:"#22c55e",
+        tension:0.4,
+        pointRadius:0
+      }]},
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        scales:{
+          x:{grid:{color:"#1f2937"}},
+          y:{grid:{color:"#1f2937"}}
+        }
+      }
+    });
+  } else {
+    ch1.data.labels=labels;
+    ch1.data.datasets[0].data=rData;
+    ch1.update();
+  }
+
+  if(!ch2){
+    ch2=new Chart(c2,{
+      type:"bar",
+      data:{labels,datasets:[{
+        label:"Attempts",
+        data:aData,
+        backgroundColor:"#3b82f6"
+      }]},
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        scales:{
+          x:{grid:{color:"#1f2937"}},
+          y:{grid:{color:"#1f2937"}}
+        }
+      }
+    });
+  } else {
+    ch2.data.labels=labels;
+    ch2.data.datasets[0].data=aData;
+    ch2.update();
+  }
+
+  if(!ch3){
+    ch3=new Chart(c3,{
+      type:"doughnut",
+      data:{labels:["High","Suspicious","Normal"],
+      datasets:[{data:[h,s,n],
+      backgroundColor:["red","orange","green"]}]}
+    });
+  } else {
+    ch3.data.datasets[0].data=[h,s,n];
+    ch3.update();
+  }
+
+  if(!ch4){
+    ch4=new Chart(c4,{
+      type:"pie",
+      data:{labels:["High","Normal"],
+      datasets:[{data:[h,n],
+      backgroundColor:["red","green"]}]}
+    });
+  } else {
+    ch4.data.datasets[0].data=[h,n];
+    ch4.update();
+  }
+}
+
+async function generateLog(){
+  await fetch("http://localhost:5000/api/logs/generate",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      ip:"192.168.1."+Math.floor(Math.random()*255),
+      attempts:Math.floor(Math.random()*10),
+      timeGap:Math.floor(Math.random()*5),
+      failures:Math.floor(Math.random()*5)
+    })
+  });
+}
+
+setInterval(loadLogs,3000);
+</script>
+
+</body>
+</html>
