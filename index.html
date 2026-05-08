@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Cyber SOC Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:#050b18;
+color:white;
+display:flex;
+overflow-x:hidden;
+}
+
+.sidebar{
+width:260px;
+height:100vh;
+background:#020817;
+padding:25px;
+position:fixed;
+left:0;
+top:0;
+border-right:1px solid rgba(255,255,255,0.05);
+}
+
+.logo{
+font-size:42px;
+margin-bottom:10px;
+}
+
+.logo-text{
+font-size:22px;
+font-weight:700;
+color:#00ff88;
+margin-bottom:40px;
+}
+
+.nav-btn{
+width:100%;
+padding:16px;
+margin-bottom:15px;
+background:#0f172a;
+border:none;
+border-radius:14px;
+color:white;
+font-size:17px;
+cursor:pointer;
+transition:0.3s;
+text-align:left;
+}
+
+.nav-btn:hover{
+background:#00ff88;
+color:black;
+}
+
+.main{
+margin-left:260px;
+padding:25px;
+width:calc(100% - 260px);
+}
+
+.alert-banner{
+background:#ff4d4d;
+padding:16px;
+border-radius:12px;
+text-align:center;
+font-weight:600;
+margin-bottom:25px;
+}
+
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
+}
+
+.topbar h1{
+font-size:50px;
+}
+
+.generate-btn{
+background:linear-gradient(45deg,#00ff88,#00c3ff);
+padding:14px 26px;
+border:none;
+border-radius:14px;
+font-size:17px;
+font-weight:600;
+color:white;
+cursor:pointer;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px;
+margin-bottom:25px;
+}
+
+.card{
+background:#0b1225;
+padding:35px;
+border-radius:18px;
+text-align:center;
+}
+
+.card h2{
+font-size:52px;
+margin-bottom:10px;
+}
+
+.card p{
+font-size:18px;
+color:#b0b8d1;
+}
+
+.chart-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+margin-bottom:25px;
+}
+
+.chart-box{
+background:#0b1225;
+padding:20px;
+border-radius:18px;
+height:350px;
+}
+
+.table-box{
+background:#0b1225;
+padding:20px;
+border-radius:18px;
+overflow:auto;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:14px;
+text-align:left;
+border-bottom:1px solid rgba(255,255,255,0.06);
+}
+
+th{
+background:#111c35;
+}
+
+.status-high{
+color:#ff4d4d;
+font-weight:bold;
+}
+
+.status-normal{
+color:#00ff88;
+font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo">🔐</div>
+
+<div class="logo-text">CyberSec</div>
+
+<button class="nav-btn">📊 Dashboard</button>
+<button class="nav-btn">📁 Logs</button>
+<button class="nav-btn">⚠ Alerts</button>
+<button class="nav-btn">📥 Reports</button>
+
+</div>
+
+<div class="main">
+
+<div class="alert-banner">
+🚨 BRUTE FORCE ATTACK DETECTED
+</div>
+
+<div class="topbar">
+
+<h1>Security Monitoring</h1>
+
+<button class="generate-btn" onclick="generateAttack()">
+⚡ Generate Attack
+</button>
+
+</div>
+
+<div class="cards">
+
+<div class="card">
+<h2 id="totalLogs">0</h2>
+<p>Total Logs</p>
+</div>
+
+<div class="card">
+<h2 id="highRisk">0</h2>
+<p>High Risk</p>
+</div>
+
+<div class="card">
+<h2 id="normalUsers">0</h2>
+<p>Normal</p>
+</div>
+
+</div>
+
+<div class="chart-grid">
+
+<div class="chart-box">
+<canvas id="riskChart"></canvas>
+</div>
+
+<div class="chart-box">
+<canvas id="attemptChart"></canvas>
+</div>
+
+</div>
+
+<div class="table-box">
+
+<table>
+
+<thead>
+
+<tr>
+<th>IP Address</th>
+<th>Attempts</th>
+<th>Risk</th>
+<th>Status</th>
+</tr>
+
+</thead>
+
+<tbody id="logTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+
+getFirestore,
+collection,
+addDoc,
+getDocs
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* FIREBASE */
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCgTJtdEvITi9_nuhvAFkEyCeHQPD9SGEM",
+  authDomain: "ssh-bruteforce.firebaseapp.com",
+  projectId: "ssh-bruteforce",
+  storageBucket: "ssh-bruteforce.firebasestorage.app",
+  messagingSenderId: "349342696112",
+  appId: "1:349342696112:web:b6d02b2a449528dd37f175",
+  measurementId: "G-SEQMQ8LKQG"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+/* CHARTS */
+
+new Chart(document.getElementById('riskChart'),{
+
+type:'line',
+
+data:{
+labels:[1,2,3,4,5,6,7,8,9,10],
+
+datasets:[{
+label:'Risk Score',
+data:[20,40,10,70,30,80,20,90,40,70],
+borderColor:'#00ff88',
+backgroundColor:'rgba(0,255,136,0.1)',
+fill:true,
+tension:0.4
+}]
+}
+
+});
+
+new Chart(document.getElementById('attemptChart'),{
+
+type:'bar',
+
+data:{
+labels:[1,2,3,4,5,6,7,8,9,10],
+
+datasets:[{
+label:'Attempts',
+data:[4,7,3,8,2,6,9,4,7,5],
+backgroundColor:'#3b82f6'
+}]
+}
+
+});
+
+/* LOAD DATABASE */
+
+async function loadLogs(){
+
+try{
+
+const querySnapshot =
+await getDocs(collection(db,"attackLogs"));
+
+let total=0;
+let high=0;
+let normal=0;
+
+document.getElementById('logTable').innerHTML='';
+
+querySnapshot.forEach((doc)=>{
+
+const data = doc.data();
+
+const statusClass =
+data.status === "Brute Force"
+? "status-high"
+: "status-normal";
+
+const row = `
+
+<tr>
+<td>${data.ip}</td>
+<td>${data.attempts}</td>
+<td>${data.risk}</td>
+<td class="${statusClass}">
+${data.status}
+</td>
+</tr>
+
+`;
+
+document.getElementById('logTable').innerHTML += row;
+
+total++;
+
+if(data.status==="Brute Force"){
+high++;
+}else{
+normal++;
+}
+
+});
+
+document.getElementById('totalLogs').innerText=total;
+
+document.getElementById('highRisk').innerText=high;
+
+document.getElementById('normalUsers').innerText=normal;
+
+}catch(error){
+
+console.log(error);
+
+}
+
+}
+
+loadLogs();
+
+/* GENERATE ATTACK */
+
+window.generateAttack = async function(){
+
+const attempts=Math.floor(Math.random()*10)+1;
+
+const risk=Math.floor(Math.random()*100);
+
+let status='Normal';
+
+let statusClass='status-normal';
+
+if(risk>70){
+
+status='Brute Force';
+
+statusClass='status-high';
+
+}
+
+const ip=`192.168.1.${Math.floor(Math.random()*255)}`;
+
+const row=`
+
+<tr>
+<td>${ip}</td>
+<td>${attempts}</td>
+<td>${risk}</td>
+<td class="${statusClass}">
+${status}
+</td>
+</tr>
+
+`;
+
+document.getElementById('logTable').innerHTML =
+row + document.getElementById('logTable').innerHTML;
+
+/* UPDATE COUNTERS */
+
+document.getElementById('totalLogs').innerText =
+parseInt(document.getElementById('totalLogs').innerText)+1;
+
+if(status==="Brute Force"){
+
+document.getElementById('highRisk').innerText =
+parseInt(document.getElementById('highRisk').innerText)+1;
+
+}else{
+
+document.getElementById('normalUsers').innerText =
+parseInt(document.getElementById('normalUsers').innerText)+1;
+
+}
+
+/* SAVE FIREBASE */
+
+try{
+
+await addDoc(collection(db,"attackLogs"),{
+
+ip:ip,
+attempts:attempts,
+risk:risk,
+status:status,
+time:new Date()
+
+});
+
+console.log("Data Saved");
+
+}catch(error){
+
+console.log(error);
+
+}
+
+/* SOUND */
+
+const audio = new Audio(
+'https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg'
+);
+
+audio.play();
+
+}
+
+</script>
+
+</body>
+
+</html>

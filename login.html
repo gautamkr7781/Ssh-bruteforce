@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>CyberSec Login</title>
+
+<style>
+
+body{
+background:#050b18;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+font-family:Arial;
+}
+
+.login-box{
+background:#0b1225;
+padding:40px;
+border-radius:20px;
+width:350px;
+box-shadow:0 0 30px #00ff88;
+}
+
+h1{
+color:white;
+text-align:center;
+margin-bottom:20px;
+}
+
+input{
+width:100%;
+padding:14px;
+margin-top:15px;
+border:none;
+border-radius:10px;
+}
+
+button{
+width:100%;
+padding:14px;
+margin-top:20px;
+border:none;
+background:#00ff88;
+font-size:16px;
+border-radius:10px;
+cursor:pointer;
+}
+
+p{
+color:red;
+text-align:center;
+margin-top:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="login-box">
+
+<h1>CyberSec Login</h1>
+
+<input type="email" id="email" placeholder="Enter Email">
+
+<input type="password" id="password" placeholder="Enter Password">
+
+<button onclick="login()">
+
+Login
+
+</button>
+
+<p id="message"></p>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+
+getAuth,
+signInWithEmailAndPassword
+
+}
+
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCgTJtdEvITi9_nuhvAFkEyCeHQPD9SGEM",
+  authDomain: "ssh-bruteforce.firebaseapp.com",
+  projectId: "ssh-bruteforce",
+  storageBucket: "ssh-bruteforce.firebasestorage.app",
+  messagingSenderId: "349342696112",
+  appId: "1:349342696112:web:b6d02b2a449528dd37f175",
+  measurementId: "G-SEQMQ8LKQG"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+window.login = function(){
+
+const email =
+document.getElementById('email').value;
+
+const password =
+document.getElementById('password').value;
+
+signInWithEmailAndPassword(auth,email,password)
+
+.then(()=>{
+
+window.location.href='index.html';
+
+})
+
+.catch((error)=>{
+
+document.getElementById('message').innerText =
+error.message;
+
+});
+
+}
+
+</script>
+
+</body>
+
+</html>
