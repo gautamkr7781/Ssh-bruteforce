@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+<<<<<<< HEAD
 
 <head>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+=======
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 <title>Cyber SOC Dashboard</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -28,6 +34,51 @@ display:flex;
 overflow-x:hidden;
 }
 
+<<<<<<< HEAD
+=======
+/* LOADER */
+
+#loader{
+position:fixed;
+width:100%;
+height:100%;
+background:#050b18;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+z-index:99999;
+animation:hideLoader 1s forwards;
+animation-delay:2s;
+}
+
+.loader-spinner{
+width:90px;
+height:90px;
+border:6px solid #1b2a45;
+border-top:6px solid #00ff88;
+border-radius:50%;
+animation:spin 1s linear infinite;
+margin-bottom:20px;
+box-shadow:0 0 30px #00ff88;
+}
+
+@keyframes spin{
+100%{
+transform:rotate(360deg);
+}
+}
+
+@keyframes hideLoader{
+to{
+opacity:0;
+visibility:hidden;
+}
+}
+
+/* SIDEBAR */
+
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 .sidebar{
 width:260px;
 height:100vh;
@@ -68,14 +119,27 @@ text-align:left;
 .nav-btn:hover{
 background:#00ff88;
 color:black;
+<<<<<<< HEAD
 }
 
+=======
+transform:translateX(4px);
+}
+
+/* MAIN */
+
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 .main{
 margin-left:260px;
 padding:25px;
 width:calc(100% - 260px);
 }
 
+<<<<<<< HEAD
+=======
+/* ALERT */
+
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 .alert-banner{
 background:#ff4d4d;
 padding:16px;
@@ -83,8 +147,23 @@ border-radius:12px;
 text-align:center;
 font-weight:600;
 margin-bottom:25px;
+<<<<<<< HEAD
 }
 
+=======
+animation:blink 1.5s infinite;
+box-shadow:0 0 25px rgba(255,0,0,0.4);
+}
+
+@keyframes blink{
+50%{
+opacity:0.7;
+}
+}
+
+/* TOPBAR */
+
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 .topbar{
 display:flex;
 justify-content:space-between;
@@ -94,8 +173,16 @@ margin-bottom:25px;
 
 .topbar h1{
 font-size:50px;
+<<<<<<< HEAD
 }
 
+=======
+font-weight:700;
+}
+
+/* BUTTON */
+
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 .generate-btn{
 background:linear-gradient(45deg,#00ff88,#00c3ff);
 padding:14px 26px;
@@ -105,8 +192,22 @@ font-size:17px;
 font-weight:600;
 color:white;
 cursor:pointer;
+<<<<<<< HEAD
 }
 
+=======
+transition:0.3s;
+box-shadow:0 0 20px rgba(0,255,136,0.4);
+}
+
+.generate-btn:hover{
+transform:scale(1.05);
+box-shadow:0 0 30px rgba(0,255,136,0.8);
+}
+
+/* CARDS */
+
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 .cards{
 display:grid;
 grid-template-columns:repeat(3,1fr);
@@ -119,6 +220,28 @@ background:#0b1225;
 padding:35px;
 border-radius:18px;
 text-align:center;
+<<<<<<< HEAD
+=======
+position:relative;
+overflow:hidden;
+box-shadow:0 0 25px rgba(0,0,0,0.4);
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-5px);
+}
+
+.card::before{
+content:'';
+position:absolute;
+width:120px;
+height:120px;
+background:rgba(0,255,136,0.08);
+border-radius:50%;
+top:-30px;
+right:-30px;
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 }
 
 .card h2{
@@ -131,6 +254,11 @@ font-size:18px;
 color:#b0b8d1;
 }
 
+<<<<<<< HEAD
+=======
+/* CHARTS */
+
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 .chart-grid{
 display:grid;
 grid-template-columns:1fr 1fr;
@@ -143,12 +271,29 @@ background:#0b1225;
 padding:20px;
 border-radius:18px;
 height:350px;
+<<<<<<< HEAD
 }
 
+=======
+box-shadow:0 0 25px rgba(0,0,0,0.4);
+}
+
+.chart-box canvas{
+width:100% !important;
+height:100% !important;
+}
+
+/* TABLE */
+
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 .table-box{
 background:#0b1225;
 padding:20px;
 border-radius:18px;
+<<<<<<< HEAD
+=======
+box-shadow:0 0 25px rgba(0,0,0,0.4);
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 overflow:auto;
 }
 
@@ -177,12 +322,43 @@ color:#00ff88;
 font-weight:bold;
 }
 
+<<<<<<< HEAD
 </style>
 
+=======
+/* RESPONSIVE */
+
+@media(max-width:1100px){
+
+.cards{
+grid-template-columns:1fr;
+}
+
+.chart-grid{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 </head>
 
 <body>
 
+<<<<<<< HEAD
+=======
+<!-- LOADER -->
+
+<div id="loader">
+<div class="loader-spinner"></div>
+<h2>Initializing Cyber Security Engine...</h2>
+<p>Loading Threat Intelligence Modules</p>
+</div>
+
+<!-- SIDEBAR -->
+
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 <div class="sidebar">
 
 <div class="logo">🔐</div>
@@ -193,9 +369,18 @@ font-weight:bold;
 <button class="nav-btn">📁 Logs</button>
 <button class="nav-btn">⚠ Alerts</button>
 <button class="nav-btn">📥 Reports</button>
+<<<<<<< HEAD
 
 </div>
 
+=======
+<button class="nav-btn">🌙 Theme</button>
+
+</div>
+
+<!-- MAIN -->
+
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 <div class="main">
 
 <div class="alert-banner">
@@ -206,12 +391,21 @@ font-weight:bold;
 
 <h1>Security Monitoring</h1>
 
+<<<<<<< HEAD
 <button class="generate-btn" onclick="generateAttack()">
+=======
+<button class="generate-btn" onclick="generateAttack()" id="generateBtn">
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 ⚡ Generate Attack
 </button>
 
 </div>
 
+<<<<<<< HEAD
+=======
+<!-- CARDS -->
+
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 <div class="cards">
 
 <div class="card">
@@ -231,6 +425,11 @@ font-weight:bold;
 
 </div>
 
+<<<<<<< HEAD
+=======
+<!-- CHARTS -->
+
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 <div class="chart-grid">
 
 <div class="chart-box">
@@ -243,19 +442,42 @@ font-weight:bold;
 
 </div>
 
+<<<<<<< HEAD
+=======
+<div class="chart-grid">
+
+<div class="chart-box">
+<canvas id="donutChart"></canvas>
+</div>
+
+<div class="chart-box">
+<canvas id="pieChart"></canvas>
+</div>
+
+</div>
+
+<!-- TABLE -->
+
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 <div class="table-box">
 
 <table>
 
 <thead>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 <tr>
 <th>IP Address</th>
 <th>Attempts</th>
 <th>Risk</th>
 <th>Status</th>
 </tr>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 </thead>
 
 <tbody id="logTable"></tbody>
@@ -266,6 +488,7 @@ font-weight:bold;
 
 </div>
 
+<<<<<<< HEAD
 <script type="module">
 
 import { initializeApp }
@@ -300,6 +523,11 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 /* CHARTS */
+=======
+<script>
+
+/* LINE CHART */
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 
 new Chart(document.getElementById('riskChart'),{
 
@@ -316,10 +544,40 @@ backgroundColor:'rgba(0,255,136,0.1)',
 fill:true,
 tension:0.4
 }]
+<<<<<<< HEAD
+=======
+},
+
+options:{
+responsive:true,
+maintainAspectRatio:false,
+
+plugins:{
+legend:{
+labels:{
+color:'white'
+}
+}
+},
+
+scales:{
+x:{
+ticks:{color:'white'}
+},
+y:{
+ticks:{color:'white'}
+}
+}
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 }
 
 });
 
+<<<<<<< HEAD
+=======
+/* BAR CHART */
+
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 new Chart(document.getElementById('attemptChart'),{
 
 type:'bar',
@@ -332,10 +590,36 @@ label:'Attempts',
 data:[4,7,3,8,2,6,9,4,7,5],
 backgroundColor:'#3b82f6'
 }]
+<<<<<<< HEAD
+=======
+},
+
+options:{
+responsive:true,
+maintainAspectRatio:false,
+
+plugins:{
+legend:{
+labels:{
+color:'white'
+}
+}
+},
+
+scales:{
+x:{
+ticks:{color:'white'}
+},
+y:{
+ticks:{color:'white'}
+}
+}
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 }
 
 });
 
+<<<<<<< HEAD
 /* LOAD DATABASE */
 
 async function loadLogs(){
@@ -381,10 +665,39 @@ if(data.status==="Brute Force"){
 high++;
 }else{
 normal++;
+=======
+/* DONUT */
+
+new Chart(document.getElementById('donutChart'),{
+
+type:'doughnut',
+
+data:{
+labels:['Normal','Suspicious','High'],
+
+datasets:[{
+data:[70,20,10],
+backgroundColor:['#00ff88','#ffaa00','#ff3333']
+}]
+},
+
+options:{
+responsive:true,
+maintainAspectRatio:false,
+
+plugins:{
+legend:{
+labels:{
+color:'white'
+}
+}
+}
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 }
 
 });
 
+<<<<<<< HEAD
 document.getElementById('totalLogs').innerText=total;
 
 document.getElementById('highRisk').innerText=high;
@@ -411,11 +724,68 @@ const risk=Math.floor(Math.random()*100);
 
 let status='Normal';
 
+=======
+/* PIE */
+
+new Chart(document.getElementById('pieChart'),{
+
+type:'pie',
+
+data:{
+labels:['Normal','High'],
+
+datasets:[{
+data:[95,5],
+backgroundColor:['#00aa00','#ff3333']
+}]
+},
+
+options:{
+responsive:true,
+maintainAspectRatio:false,
+
+plugins:{
+legend:{
+labels:{
+color:'white'
+}
+}
+}
+}
+
+});
+
+/* GENERATE ATTACK */
+
+function generateAttack(){
+
+const btn=document.getElementById('generateBtn');
+
+btn.innerHTML='⏳ Processing...';
+
+setTimeout(()=>{
+
+btn.innerHTML='⚡ Generate Attack';
+
+const total=document.getElementById('totalLogs');
+const high=document.getElementById('highRisk');
+const normal=document.getElementById('normalUsers');
+
+let totalValue=parseInt(total.innerText);
+let highValue=parseInt(high.innerText);
+let normalValue=parseInt(normal.innerText);
+
+const attempts=Math.floor(Math.random()*10)+1;
+const risk=Math.floor(Math.random()*100);
+
+let status='Normal';
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 let statusClass='status-normal';
 
 if(risk>70){
 
 status='Brute Force';
+<<<<<<< HEAD
 
 statusClass='status-high';
 
@@ -486,10 +856,44 @@ const audio = new Audio(
 
 audio.play();
 
+=======
+statusClass='status-high';
+
+high.innerText=highValue+1;
+
+}else{
+
+normal.innerText=normalValue+1;
+
+}
+
+const row=`
+<tr>
+<td>192.168.1.${Math.floor(Math.random()*255)}</td>
+<td>${attempts}</td>
+<td>${risk}</td>
+<td class="${statusClass}">${status}</td>
+</tr>
+`;
+
+document.getElementById('logTable').innerHTML=
+row + document.getElementById('logTable').innerHTML;
+
+total.innerText=totalValue+1;
+
+const audio=new Audio('https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg');
+audio.play();
+
+},2000);
+
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 }
 
 </script>
 
 </body>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9d9e42a366e2f319e72b6b74b4898440f5f0620d
 </html>
